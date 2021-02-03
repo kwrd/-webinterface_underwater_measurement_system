@@ -1,3 +1,4 @@
 node_modules/
 tailwindcss/
+static/css/style.css
 .DS_Store
