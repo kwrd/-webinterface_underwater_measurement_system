@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+{{template "header" .}}
+<section class="flex flex-col flex-grow overflow-hidden bg-gray-100">
+<div class="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+
+  <div class="relative py-3 sm:max-w-xl sm:mx-auto">
+    <div class="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
+      <div class="max-w-md mx-auto">
+        <div class="flex items-center space-x-5">
+          <label class="leading-loose">Raspberry Pi に BLE接続する</label>
+          <button id="connect" class="border-2 border-blue-500 rounded-lg font-bold text-blue-500 px-4 py-3 transition duration-300 ease-in-out hover:bg-blue-500 hover:text-white mr-6">
+              接続
+          </button>
+          <button id="disconnect" class="border-2 border-blue-500 rounded-lg font-bold text-blue-500 px-4 py-3 transition duration-300 ease-in-out hover:bg-blue-500 hover:text-white mr-6">
+              切断
+          </button>
+        </div>
+        <div class="divide-y divide-gray-200">
+          <div class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+            <div class="flex flex-col">
+              <label class="leading-loose">入力波形の周波数(Hz)</label>
+              <input id="wavefreq" type="text" class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Event title">
+            </div>
+            <div class="flex flex-col">
+              <label class="leading-loose">トリガーレベル(V)</label>
+              <input id="trigger" type="text" value="2.0" class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Optional">
+            </div>
+            <div class="flex flex-col">
+              <label class="leading-loose">Controller</label>
+              <input id="message" type="text" value="save" class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Optional">
+            </div>
+          </div>
+          <div class="pt-4 flex items-center space-x-4">
+              <button id="send" class="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none">Run</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="relative py-3 sm:max-w-xl sm:mx-auto">
+    <div class="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
+      <div class="max-w-md mx-auto">
+        <div class="flex items-center space-x-5">
+          <label class="leading-loose">グラフ</label>
+          <button id="getcsv" class="border-2 border-blue-500 rounded-lg font-bold text-blue-500 px-4 py-3 transition duration-300 ease-in-out hover:bg-blue-500 hover:text-white mr-6">
+              CSVファイルの選択
+          </button>
+          <button id="csvfromble" class="border-2 border-blue-500 rounded-lg font-bold text-blue-500 px-4 py-3 transition duration-300 ease-in-out hover:bg-blue-500 hover:text-white mr-6">
+              BLEから取得
+          </button>
+        </div>
+        <div class="divide-y divide-gray-200">
+          <div class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+            <label class="leading-loose">取得中のデータの情報</label>
+            <input type="button" value="0:00〜23:59" onclick="onButton24();"></input>
+            <input type="button" value="9:00〜20:00" onclick="onButton();"></input>
+            <canvas id="csvChart" ></canvas>
+          </div>
+        </div>
+        
+        <div class="slidecontainer py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+          <!-- https://www.w3schools.com/howto/howto_js_rangeslider.asp -->
+          <input type="range" min="1" max="100" value="50" class="slider red" id="myRange">
+        </div>
+        <p>Range: <span id="demo"></span> s/div</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<script>
+// 情報元： https://shimz.me/blog/microbit/5456
+var bluetoothDevice;
+var characteristic;
+//micro:bit BLE UUID
+var SERVICE_UUID                        = 0xec00;
+var TEXT_CHARACTERISTIC_UUID            = 0xEC0F;
+
+//ボタンイベントリスナー
+document.getElementById('connect').addEventListener("click", connect);
+document.getElementById('disconnect').addEventListener("click", disconnect);
+document.getElementById('send').addEventListener("click", sendMessage);
+
+//micro:bitに接続する
+function connect() {
+  let options = {};
+  //options.acceptAllDevices = true;
+  options.filters = [
+    {services: [0xec00]},
+    //{namePrefix: "raspberrypi"}
+  ];
+  navigator.bluetooth.requestDevice({
+      filters: [{ services: [0xec00] }]
+  })
+  .then(device => {
+    bluetoothDevice = device;
+    console.log("device", device);
+    return device.gatt.connect();
+  })
+  .then(server =>{
+    console.log("server", server)
+    return server.getPrimaryService(SERVICE_UUID);
+  })
+  .then(service => {
+    console.log("service", service)
+    return service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
+  })
+  .then(chara => {
+    console.log("characteristic", chara)
+    alert("BLE接続が完了しました。");
+    characteristic = chara;
+  })
+  .catch(error => {
+    console.log("message: ",error.message);
+  });
+}
+
+//LEDに表示するメッセージを送信
+function sendMessage() {
+  if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
+  var text = document.querySelector("#message").value;
+  const wavefreq = document.querySelector("#wavefreq").value;
+  const trigger = document.querySelector("#trigger").value;
+  console.log(wavefreq)
+  console.log(trigger)
+  var arrayBuffe = new TextEncoder().encode(wavefreq);
+  characteristic.writeValue(arrayBuffe);
+}
+
+//BLE切断処理
+function disconnect() {
+  if (!bluetoothDevice || !bluetoothDevice.gatt.connected) return ;
+  bluetoothDevice.gatt.disconnect();
+  alert("BLE接続を切断しました。")
+}
+
+</script>
+<!-- my chart program
+<script src="/static/js/chart.js"></script>-->
+</section>
+{{template "footer"}}

@@ -1,0 +1,64 @@
+{{define "header"}}
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>海中センサ - webインターフェース</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel='stylesheet'
+        href='https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.9.1/css/OverlayScrollbars.min.css'>
+    <!-- font -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <!--tailwindcss-->
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <!-- github markdown-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.css"
+        integrity="sha512-j84w/URwwK++Im1eDnefcHbtMSYWbwaLmJqcj58tDiZtjfPFPHEzxcnyOpqfGhTgxd/6xL2J9rmF987W64S8Tw=="
+        crossorigin="anonymous" />
+    <!-- chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha512-vBmx0N/uQOXznm/Nbkp7h0P1RfLSj0HQrFSzV8m7rOGyj30fYAOKHYvCNez+yM8IrfnW0TCodDEjRqf6fodf/Q==" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
+    <!-- OGP -->
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <meta property="og:site_name" content="" />
+    <meta property="og:description" content="" />
+</head>
+
+<body>
+    <!-- START NAV -->
+    <nav class="bg-white">
+        <div class="md:flex items-center justify-between py-2 px-8 md:px-12 navbar-item">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold text-gray-800 md:text-3xl">
+                    <a href="/index">計測システム - web interface - </a>
+                </div>
+                <div class="md:hidden">
+                    <button type="button"
+                        class="block text-gray-800 hover:text-gray-700 focus:text-gray-700 focus:outline-none">
+                        <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
+                            <path class="hidden"
+                                d="M16.24 14.83a1 1 0 0 1-1.41 1.41L12 13.41l-2.83 2.83a1 1 0 0 1-1.41-1.41L10.59 12 7.76 9.17a1 1 0 0 1 1.41-1.41L12 10.59l2.83-2.83a1 1 0 0 1 1.41 1.41L13.41 12l2.83 2.83z" />
+                            <path
+                                d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!--
+            <div class="flex flex-col md:flex-row hidden md:block -mx-2">
+                <a href="/md"
+                    class="text-gray-800 rounded hover:bg-gray-900 hover:text-gray-100 hover:font-medium py-2 px-2 md:mx-2">BLEスイッチ</a>
+                <a href="#"
+                    class="text-gray-800 rounded hover:bg-gray-900 hover:text-gray-100 hover:font-medium py-2 px-2 md:mx-2">チャート</a>
+                <a href="#"
+                    class="text-gray-800 rounded hover:bg-gray-900 hover:text-gray-100 hover:font-medium py-2 px-2 md:mx-2">計測情報</a>
+            </div>-->
+        </div>
+    </nav>
+    <!-- END NAV -->
+    {{end}}

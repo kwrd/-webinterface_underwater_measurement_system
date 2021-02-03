@@ -1,0 +1,18 @@
+{{define "footer"}}
+<footer class="footer text-center py-4 bg-white navbar-item">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.9.1/js/OverlayScrollbars.min.js'></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            //The first argument are the elements to which the plugin shall be initialized
+            //The second argument has to be at least a empty object or a object with your desired options
+            OverlayScrollbars(document.querySelectorAll("body"), {});
+        });
+    </script>
+    <div>&copy; kohge4</div>
+    <!--<a href="https://tkybpp.hatenablog.com/entry/2019/04/10/100000">demo</a>
+    <a href="https://qiita.com/megadreams14/items/02f524540896449944cd">qiitademo</a> -->
+</footer>
+</body>
+
+</html>
+{{end}}
